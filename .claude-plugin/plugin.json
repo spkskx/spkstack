@@ -1,0 +1,12 @@
+{
+  "name": "spkstack",
+  "version": "0.1.0",
+  "description": "A personal AI stack for building software: turn an idea into tickets, then turn each ticket into a pull request.",
+  "author": {
+    "name": "spkskx"
+  },
+  "homepage": "https://github.com/spkskx/spkstack",
+  "repository": "https://github.com/spkskx/spkstack",
+  "license": "MIT",
+  "keywords": ["workflow", "github", "issues", "pull-requests", "planning"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "spkstack",
+  "description": "spkstack: a personal AI stack for building software with Claude Code.",
+  "owner": {
+    "name": "spkskx"
+  },
+  "plugins": [
+    {
+      "name": "spkstack",
+      "source": "./",
+      "description": "A personal AI stack for building software: turn an idea into tickets, then turn each ticket into a pull request."
+    }
+  ]
+}
