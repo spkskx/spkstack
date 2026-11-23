@@ -94,7 +94,7 @@ If assign fails, the comment is enough. Claim before you write code.
 
 ## 3. Plan
 
-Read the issue (title, body, acceptance criteria, labels, milestone, dependencies). If its Context section links a spec (`docs/specs/<slug>.md`), read the spec too: from the base branch if it is there, otherwise from the open spec PR's branch (`gh pr view <spec-pr> --json headRefName`, then `git show origin/<branch>:docs/specs/<slug>.md`). If it names an epic, skim the epic so you know what neighbouring tickets cover and stay out of their scope.
+Read the issue (title, body, acceptance criteria, labels, milestone, dependencies). If its Context section names an epic (`Epic: #N`), read the epic with `gh issue view N --comments`: its body is the spec (problem, scope, approach, open questions), and its Tickets list shows what neighbouring tickets cover, so stay out of their scope.
 
 Discover repo conventions instead of assuming a stack. Read, when they exist:
 
