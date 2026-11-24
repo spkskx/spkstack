@@ -1,6 +1,6 @@
 {
   "name": "spkstack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A personal AI stack for building software: turn an idea into tickets, then turn each ticket into a pull request.",
   "author": {
     "name": "spkskx"

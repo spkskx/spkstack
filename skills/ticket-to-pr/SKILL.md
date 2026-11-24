@@ -1,7 +1,7 @@
 ---
 name: ticket-to-pr
 description: Pick a GitHub issue, plan and implement it, then open a pull request that closes the issue. Use when the user wants to pick up a ticket, work the next issue, or run a ticket-to-PR workflow in any GitHub repo, optionally with an issue number.
-argument-hint: "[issue-number]"
+argument-hint: "[issue-number] [--unattended]"
 compatibility: Requires git and the GitHub CLI (gh). Run from a local clone of a GitHub repository.
 ---
 
@@ -15,6 +15,7 @@ Issue argument (may be empty): $ARGUMENTS
 
 - If a number was provided (a leading `#` is fine), use that issue after the checks in step 2.
 - If none was provided, pick the highest-value open issue as defined in step 2.
+- If `--unattended` is present, run in unattended mode (below).
 
 ## Hard limits
 
@@ -24,6 +25,10 @@ Issue argument (may be empty): $ARGUMENTS
 - Do not touch secrets, infra dashboards, DNS, or billing. If the ticket needs those, put numbered manual steps in the PR instead.
 - Do not invent facts in content or docs. Mark gaps `TODO` and open a draft PR.
 - Write concisely in commits, comments, and the PR. No em dashes. No emoji.
+
+## Unattended mode
+
+For another skill that runs this one in a loop. Follow the contract's Unattended runs section: it needs an issue number, never asks the user anything, and replaces every "stop", "stop and ask", or "stop and tell the user" below with the action it lists. End on the base branch with a clean tree, and make the last line of output the result line it defines. Without `--unattended`, ignore this section.
 
 ## 1. Preflight
 
@@ -54,12 +59,7 @@ git ls-remote --heads origin
 
 If a number was provided, load that issue with `gh issue view` as well.
 
-An issue is ineligible when any of these is true (label matches are case-insensitive):
-
-- It has a label `blocked`, `wontfix`, `question`, or `epic`, or a label that starts with `needs-` (for example `needs-info`, `needs-design`). An `epic` is a tracking issue: work its children, never the epic itself.
-- It is assigned to someone other than the current `gh` user. Unassigned issues are eligible. Already assigned to you is eligible (treat as already claimed).
-- An open PR already closes or links it (`closingIssuesReferences`, or the PR title or body cites `#N`), or `origin` has a branch named `N-*`.
-- A `Depends on #N` or `Blocked by #N` line in the body points at an issue that is still open. A dependency is met only when that issue is closed, or its closing PR is merged. Also parse a `Dependencies:` line that lists `#N`.
+An issue is ineligible when any rule in the contract's Eligibility section applies. Check every rule against the state gathered above.
 
 From the eligible set, rank and pick the first issue, using these keys in order:
 
@@ -122,7 +122,7 @@ Make small, focused commits. Follow the conventions you discovered in step 3 (la
 
 Install and run the repo's own checks, using its package manager or build tool. Typical patterns, only when those files and scripts exist: install (for example `pnpm install`, `npm ci`, `cargo fetch`), then lint, typecheck, test, and build. If CI runs extra checks (schema validate, link check, format), run the same locally when you can. If this ticket is the one that adds a script or check, run what already exists and add what the ticket requires.
 
-Fix until the checks are green. Do not open a PR with a known red local check that this change caused.
+Fix until the checks are green. Do not open a PR with a known red local check that this change caused. Unattended runs are the one exception: a draft PR that names the failing check, as the contract says.
 
 ## 5. Open the PR
 
