@@ -18,6 +18,7 @@ gh label create p3          --color c2e0c6 --description "Nice to have" --force
 gh label create size:s      --color ededed --description "Under half a day" --force
 gh label create size:m      --color bfdadc --description "About a day" --force
 gh label create epic        --color 3e4b9e --description "Tracking issue, not worked directly" --force
+gh label create needs-info  --color d876e3 --description "Waiting on input from the user" --force
 ```
 
 Every ticket has exactly one type label, one priority label, and one size label. There is no `size:l`: a ticket that big gets split.
@@ -82,3 +83,37 @@ One tracking issue per idea. Its body is the spec, so planning produces only Git
 The Tickets task list holds the children in the order they should land. When the spec changes, edit the epic body and say what changed in a comment on it.
 
 `ticket-to-pr` never picks an issue labeled `epic`. It reads the epic as the spec for any ticket that links it.
+
+## Eligibility
+
+An open issue can be worked unless any of these is true (label matches are case-insensitive):
+
+- It has a label `blocked`, `wontfix`, `question`, or `epic`, or a label that starts with `needs-` (for example `needs-info`, `needs-design`). An `epic` is a tracking issue: work its children, never the epic itself.
+- It is assigned to someone other than the current `gh` user. Unassigned issues are eligible. Already assigned to the current user is eligible (treat as already claimed).
+- An open PR already closes or links it (`closingIssuesReferences`, or the PR title or body cites `#N`), or `origin` has a branch named `N-*`.
+- A `Depends on #N` or `Blocked by #N` line in the body points at an issue that is still open. A dependency is met only when that issue is closed, or its closing PR is merged. Also parse a `Dependencies:` line that lists `#N`.
+
+Which eligible issue goes first is up to the skill that picks.
+
+## Unattended runs
+
+Another skill can run `ticket-to-pr` on one ticket without anyone answering questions mid-run. The caller passes `<N> --unattended`, and must already have the user's approval for the whole run (claim, branch, push, PR). The hard limits of `ticket-to-pr` still apply.
+
+At every point where `ticket-to-pr` would stop and ask, it does this instead:
+
+| Situation | Action | Result |
+|---|---|---|
+| No issue number given | Nothing | `skipped: no issue number` |
+| Not a git checkout, no GitHub remote or more than one plausible one, `gh` not signed in or cannot write, dirty tree, base branch missing on the remote | Nothing. The issue is not touched | `skipped: <problem>` |
+| Issue is not eligible (closed, a label above, assigned to someone else, open PR or branch, unmet dependency) | Nothing. No other issue is picked | `skipped: <rule that failed>` |
+| Acceptance criteria are ambiguous, or the ticket needs facts only the user can supply | Comment the questions on the issue as a numbered list, add `needs-info` (create the label first if missing), no branch, no PR | `skipped: needs-info` |
+| Content or docs ticket missing sources | Draft structure with `TODO`s, as in an attended run | `draft #<PR>` |
+| A check stays red and this run cannot fix it | Push the branch and open a draft PR that names the failing check and the command that shows it | `draft #<PR>` |
+
+The run ends on the base branch with a clean tree, so the caller can start the next ticket. Its last line is exactly one of:
+
+```
+opened #<PR>
+draft #<PR>
+skipped: <reason on one line>
+```
