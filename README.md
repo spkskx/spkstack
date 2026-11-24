@@ -10,6 +10,7 @@ Inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) and [gs
 idea  --/spkstack:idea-to-tickets-->  GitHub issues (epic + tickets)  --/spkstack:ticket-to-pr-->  pull request
                                                                       --/spkstack:next---------->  one PR per ready ticket
 pull request  --/spkstack:review-->  one comment: each acceptance criterion met, not met, or unclear
+epic's PRs    --/spkstack:ship---->  conflicts cleared, checks green, review threads answered
 a run         --/spkstack:retro--->  lessons filed as tickets on spkstack itself
 ```
 
@@ -19,6 +20,7 @@ a run         --/spkstack:retro--->  lessons filed as tickets on spkstack itself
 | [`/spkstack:ticket-to-pr`](skills/ticket-to-pr/SKILL.md) | Picks the top eligible issue (or the one you name), plans, implements, runs the repo's checks, and opens a PR that closes it. |
 | [`/spkstack:next`](skills/next/SKILL.md) | Runs ticket-to-pr on every ticket of an epic that can start now, one at a time, after one approval, and posts the pass report on the epic. Never merges: merge the PRs, then run it again for the tickets that depended on them. |
 | [`/spkstack:review`](skills/review/SKILL.md) | Checks a PR against the acceptance criteria of the ticket it closes and flags work outside its scope, then posts one review comment. Never approves or merges. For bugs, use `/code-review`. |
+| [`/spkstack:ship`](skills/ship/SKILL.md) | One pass over an epic's open PRs after one approval: merges the base branch in to clear conflicts, fixes failing checks, answers review threads, and pushes to each PR's branch. Never merges or force-pushes. To watch one PR until it merges, use `/steward`. |
 | [`/spkstack:retro`](skills/retro/SKILL.md) | Gathers lessons about the skills from a run (the session, the epic's pass reports, `needs-info` questions, PR comments), and after one approval files each as a ticket on the spkstack repo. Edits nothing itself. |
 
 The skills agree on one format: [`docs/ticket-contract.md`](docs/ticket-contract.md) (labels, issue body, sizing, eligibility, unattended runs, and the epic that holds the spec).
@@ -49,6 +51,7 @@ All skills need `git` and the GitHub CLI (`gh auth login`).
 /spkstack:next
 /spkstack:next 12
 /spkstack:review 20
+/spkstack:ship 12
 /spkstack:retro 12
 ```
 
@@ -56,7 +59,6 @@ All skills need `git` and the GitHub CLI (`gh auth login`).
 
 Not built yet. Each gets added when a real project hits the need.
 
-- `/spkstack:ship`: drive a PR to merge-ready (CI, review threads, conflicts).
 - `/spkstack:help`: which skill fits this task.
 
 ## Contributing to it
