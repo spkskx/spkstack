@@ -28,7 +28,7 @@ Issue argument (may be empty): $ARGUMENTS
 
 ## Unattended mode
 
-For another skill that runs this one in a loop. Follow the contract's Unattended runs section: it needs an issue number, never asks the user anything, and replaces every "stop", "stop and ask", or "stop and tell the user" below with the action it lists. End on the base branch with a clean tree, and make the last line of output the result line it defines. Without `--unattended`, ignore this section.
+For another skill that runs this one in a loop, such as `/spkstack:next`. Follow the contract's Unattended runs section: it needs an issue number, never asks the user anything, and replaces every "stop", "stop and ask", or "stop and tell the user" below with the action it lists. End on the base branch with a clean tree, and make the last line of output the result line it defines. Without `--unattended`, ignore this section.
 
 ## 1. Preflight
 
