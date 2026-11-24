@@ -9,6 +9,7 @@ Inspired by [pstack](https://github.com/cursor/plugins/tree/main/pstack) and [gs
 ```
 idea  --/spkstack:idea-to-tickets-->  GitHub issues (epic + tickets)  --/spkstack:ticket-to-pr-->  pull request
                                                                       --/spkstack:next---------->  one PR per ready ticket
+pull request  --/spkstack:review-->  one comment: each acceptance criterion met, not met, or unclear
 ```
 
 | Skill | What it does |
@@ -16,6 +17,7 @@ idea  --/spkstack:idea-to-tickets-->  GitHub issues (epic + tickets)  --/spkstac
 | [`/spkstack:idea-to-tickets`](skills/idea-to-tickets/SKILL.md) | Asks a few forcing questions, agrees an MVP cut, then files GitHub issues only: an epic whose body is the spec, and ordered, labeled tickets. Optionally adds them to a GitHub Project or milestone. |
 | [`/spkstack:ticket-to-pr`](skills/ticket-to-pr/SKILL.md) | Picks the top eligible issue (or the one you name), plans, implements, runs the repo's checks, and opens a PR that closes it. |
 | [`/spkstack:next`](skills/next/SKILL.md) | Runs ticket-to-pr on every ticket of an epic that can start now, one at a time, after one approval, and posts the pass report on the epic. Never merges: merge the PRs, then run it again for the tickets that depended on them. |
+| [`/spkstack:review`](skills/review/SKILL.md) | Checks a PR against the acceptance criteria of the ticket it closes and flags work outside its scope, then posts one review comment. Never approves or merges. For bugs, use `/code-review`. |
 
 The skills agree on one format: [`docs/ticket-contract.md`](docs/ticket-contract.md) (labels, issue body, sizing, eligibility, unattended runs, and the epic that holds the spec).
 
@@ -44,13 +46,13 @@ All skills need `git` and the GitHub CLI (`gh auth login`).
 /spkstack:ticket-to-pr 14
 /spkstack:next
 /spkstack:next 12
+/spkstack:review 20
 ```
 
 ## Roadmap
 
 Not built yet. Each gets added when a real project hits the need.
 
-- `/spkstack:review`: review a PR against its ticket's acceptance criteria.
 - `/spkstack:ship`: drive a PR to merge-ready (CI, review threads, conflicts).
 - `/spkstack:retro`: turn lessons from a run into edits to these skills.
 - `/spkstack:help`: which skill fits this task.
