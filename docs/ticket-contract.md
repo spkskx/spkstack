@@ -1,6 +1,6 @@
 # Ticket contract
 
-The format of a GitHub issue that spkstack can work. `/spkstack:idea-to-tickets` writes issues in this format. `/spkstack:ticket-to-pr` reads them. Change this file first when the format changes, then update both skills.
+The format of a GitHub issue that spkstack can work. `/spkstack:idea-to-tickets` writes issues in this format. `/spkstack:ticket-to-pr` reads them. `/spkstack:next` runs ticket-to-pr over an epic, using the Eligibility and Unattended runs sections. Change this file first when the format changes, then update both skills.
 
 ## Labels
 
