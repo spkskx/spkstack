@@ -15,7 +15,7 @@ idea  --/spkstack:idea-to-tickets-->  GitHub issues (epic + tickets)  --/spkstac
 |---|---|
 | [`/spkstack:idea-to-tickets`](skills/idea-to-tickets/SKILL.md) | Asks a few forcing questions, agrees an MVP cut, then files GitHub issues only: an epic whose body is the spec, and ordered, labeled tickets. Optionally adds them to a GitHub Project or milestone. |
 | [`/spkstack:ticket-to-pr`](skills/ticket-to-pr/SKILL.md) | Picks the top eligible issue (or the one you name), plans, implements, runs the repo's checks, and opens a PR that closes it. |
-| [`/spkstack:next`](skills/next/SKILL.md) | Runs ticket-to-pr on every ticket of an epic that can start now, one at a time, after one approval. Never merges: merge the PRs, then run it again for the tickets that depended on them. |
+| [`/spkstack:next`](skills/next/SKILL.md) | Runs ticket-to-pr on every ticket of an epic that can start now, one at a time, after one approval, and posts the pass report on the epic. Never merges: merge the PRs, then run it again for the tickets that depended on them. |
 
 The skills agree on one format: [`docs/ticket-contract.md`](docs/ticket-contract.md) (labels, issue body, sizing, eligibility, unattended runs, and the epic that holds the spec).
 

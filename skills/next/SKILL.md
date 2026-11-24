@@ -20,7 +20,7 @@ Epic argument (may be empty): $ARGUMENTS
 - Do not merge. Do not push to the default branch.
 - Do nothing outward-facing (claims, comments, branches, pushes, PRs) before the user approves the queue in step 3.
 - Work only the tickets in the approved queue. Do not add tickets during a pass, and never work an issue outside the epic.
-- Do not edit the epic: not its body, labels, or Tickets list.
+- Do not edit the epic: not its body, labels, or Tickets list. The only write to it is one pass report comment (step 5).
 - One ticket at a time, each from a clean, up-to-date base branch. No parallel runs, no stacked branches.
 - Write concisely. No em dashes. No emoji.
 
@@ -53,7 +53,7 @@ Show the queue in Tickets-list order:
 | 13 | ... | blocked: depends on #12 |
 | 11 | ... | done |
 
-Then say what approval covers. For each ticket that runs, ticket-to-pr will comment and assign itself, comment its plan, push a branch `<N>-<slug>`, and open a PR, or a draft PR when a check stays red or sources are missing. If it cannot proceed without the user, it comments numbered questions on the ticket and adds `needs-info` instead.
+Then say what approval covers. For each ticket that runs, ticket-to-pr will comment and assign itself, comment its plan, push a branch `<N>-<slug>`, and open a PR, or a draft PR when a check stays red or sources are missing. If it cannot proceed without the user, it comments numbered questions on the ticket and adds `needs-info` instead. At the end, next posts the pass report as one comment on the epic.
 
 Ask once and wait. If the user drops tickets, remove them, show the queue again, and ask again. If nothing runs, skip to step 5.
 
@@ -85,3 +85,5 @@ Tell the user, briefly:
 - Unclear: each ticket with what you found.
 - Not in the Tickets list, if any (step 2.5).
 - Next: review and merge the PRs, answer any `needs-info` questions, then run `/spkstack:next <E>` again. If every listed ticket is closed, say the epic can be closed; do not close it.
+
+Then post the same report on the epic, as one comment, headed `## next pass`. Write it to a temp file (`mktemp`) and run `gh issue comment <E> --body-file <file>`. Post only if the user approved a queue in step 3; a pass that stopped earlier, or had nothing to run, posts nothing. If the comment fails, do not retry: tell the user it was not posted and show the error.
