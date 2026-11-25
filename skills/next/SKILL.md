@@ -84,6 +84,6 @@ Tell the user, briefly:
 - Blocked: each ticket and what it waits on.
 - Unclear: each ticket with what you found.
 - Not in the Tickets list, if any (step 2.5).
-- Next: review and merge the PRs, answer any `needs-info` questions, then run `/spkstack:next <E>` again. If every listed ticket is closed, say the epic can be closed; do not close it.
+- Next: review and merge the PRs, answer any `needs-info` questions (on the ticket, or by running `/spkstack:ticket-to-pr <N>`, which grills through them and goes on to the PR), then run `/spkstack:next <E>` again. If every listed ticket is closed, say the epic can be closed; do not close it.
 
 Then post the same report on the epic, as one comment, headed `## next pass`. Write it to a temp file (`mktemp`) and run `gh issue comment <E> --body-file <file>`. Post only if the user approved a queue in step 3; a pass that stopped earlier, or had nothing to run, posts nothing. If the comment fails, do not retry: tell the user it was not posted and show the error.

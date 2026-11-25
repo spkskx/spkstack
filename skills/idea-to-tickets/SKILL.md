@@ -1,13 +1,13 @@
 ---
 name: idea-to-tickets
-description: Turn a raw product or feature idea into GitHub issues: an epic that holds the spec, plus ordered, labeled tickets that ticket-to-pr can work one by one. Use when the user has an idea, a feature request, or an app they want to build and wants it scoped, broken down, planned into tickets, or turned into a backlog or epic in a GitHub repo or project.
+description: Turn a raw product or feature idea into GitHub issues: an epic that holds the spec, plus ordered, labeled tickets that ticket-to-pr can work one by one. Use when the user has an idea, a feature request, or an app they want to build and wants it scoped, grilled, stress-tested, broken down, planned into tickets, or turned into a backlog or epic in a GitHub repo or project.
 argument-hint: "[idea]"
 compatibility: Requires the GitHub CLI (gh). Run from a local clone of a GitHub repository, or name the repo.
 ---
 
 # idea-to-tickets
 
-Turn one idea into GitHub issues: an epic whose body is the spec, and the tickets that build it. Every issue follows the spkstack ticket contract: `../../docs/ticket-contract.md`, relative to this skill's base directory. Read it before step 4. The next step after this skill is `/spkstack:ticket-to-pr`.
+Turn one idea into GitHub issues: an epic whose body is the spec, and the tickets that build it. Every issue follows the spkstack ticket contract: `../../docs/ticket-contract.md`, relative to this skill's base directory. Read it before step 4. Step 2 follows the grilling protocol: `../../docs/grilling.md`, same base. Read it before step 2. The next step after this skill is `/spkstack:ticket-to-pr`.
 
 The only output is issues (and, if asked, items on a GitHub Project). No files, branches, commits, or pull requests.
 
@@ -37,9 +37,9 @@ If no idea was given, ask for it in one line and wait.
    - **Existing**: has code. If it is the local checkout, read `README.md`, `CLAUDE.md`, `AGENTS.md`, `docs/`, manifests and lockfiles, and skim the top-level layout. If it is remote only, read the same through `gh api repos/OWNER/REPO/contents/<path>` or `gh repo view`. Tickets must fit the real stack and name real files.
 4. Check for overlap: `gh issue list --repo OWNER/REPO --state open --limit 100 --json number,title,labels`. If an open epic already covers this idea, say so and ask whether to extend it or start a new one.
 
-## 2. Forcing questions
+## 2. Grill the idea
 
-Ask four to six short questions with AskUserQuestion, in at most two rounds. Skip any the idea or the repo already answers, and say what you inferred instead. Offer concrete options, with your recommended answer first.
+Grill the user as `grilling.md` describes, until the frontier is empty or the user says to go with your recommendations. These are the root branches of the design tree; answers open new branches under them:
 
 1. **Who** is it for? One specific user, not "everyone".
 2. **Pain**: what do they do today without it, and what is bad about that?
@@ -47,6 +47,8 @@ Ask four to six short questions with AskUserQuestion, in at most two rounds. Ski
 4. **Out**: what is explicitly not in the first version?
 5. **Constraints**: stack, hosting, budget, deadline, existing services to reuse. For greenfield, recommend a stack and say why in one line.
 6. **Done**: how will we know it works? A demo path, a metric, or a test.
+
+Settle what the idea or the repo already answers without asking, and say what you found. Keep the decisions and assumptions for the spec's Decisions section, and the unknown facts for Open questions. The MVP cut in step 3 is the restatement the user confirms.
 
 ## 3. MVP cut
 
@@ -62,7 +64,7 @@ Ask the user to approve or edit before going on.
 
 ## 4. Spec draft
 
-Draft the epic body in the contract's Epic format (Problem, Users, MVP scope, Out of scope, Approach, Phases, Risks, Open questions). Keep it to what the tickets need: a page or two, not a design doc for its own sake. Hold it in the conversation; it is filed in step 6.
+Draft the epic body in the contract's Epic format (Problem, Users, MVP scope, Out of scope, Approach, Decisions, Phases, Risks, Open questions). Decisions holds what step 2 settled. Keep it to what the tickets need: a page or two, not a design doc for its own sake. Hold it in the conversation; it is filed in step 6.
 
 ## 5. Break down
 
@@ -74,6 +76,7 @@ Slice the MVP into tickets following the contract's sizing rule:
 - Add `Depends on` only for real ordering constraints, so independent tickets can run in parallel.
 - Priorities: the critical path to a usable MVP is `p1`, polish is `p2` or `p3`. Use `p0` only if the user said something is urgent.
 - Put deferred phases in the spec's Phases section, not in tickets, unless the user asks for them now.
+- If slicing hits a decision the user has not made (which slice first, whether something is in the MVP), grill that branch before showing the table, and add the answer to Decisions.
 
 Show the spec draft and the full ticket table together, and wait for approval:
 
@@ -105,5 +108,5 @@ Tell the user, briefly:
 - Epic URL (it holds the spec)
 - Ticket count, and which ones can start now (no unmet dependencies)
 - Project or milestone, if used
-- Any `TODO`s or `needs-info` tickets waiting on them
+- Any `TODO`s or `needs-info` tickets waiting on them, and any `(assumed)` decisions they may want to revisit
 - Next: `/spkstack:ticket-to-pr` (no number picks the top eligible ticket)

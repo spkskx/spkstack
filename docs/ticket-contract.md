@@ -1,6 +1,6 @@
 # Ticket contract
 
-The format of a GitHub issue that spkstack can work. `/spkstack:idea-to-tickets` writes issues in this format. `/spkstack:ticket-to-pr` reads them. `/spkstack:next` runs ticket-to-pr over an epic, using the Eligibility and Unattended runs sections. Change this file first when the format changes, then update both skills.
+The format of a GitHub issue that spkstack can work. `/spkstack:idea-to-tickets` writes issues in this format. `/spkstack:ticket-to-pr` reads them. `/spkstack:next` runs ticket-to-pr over an epic, using the Eligibility and Unattended runs sections. When an idea or a ticket needs the user's decisions, both skills grill the user as `grilling.md` describes. Change this file first when the format changes, then update both skills.
 
 ## Labels
 
@@ -70,6 +70,8 @@ One tracking issue per idea. Its body is the spec, so planning produces only Git
 ## Out of scope
 ## Approach
 <architecture sketch, main data shapes, key flows; real files in an existing repo>
+## Decisions
+<one line each, settled while grilling the idea; `(assumed)` marks a recommendation taken without an answer>
 ## Phases
 ## Risks
 ## Open questions
@@ -106,7 +108,7 @@ At every point where `ticket-to-pr` would stop and ask, it does this instead:
 | No issue number given | Nothing | `skipped: no issue number` |
 | Not a git checkout, no GitHub remote or more than one plausible one, `gh` not signed in or cannot write, dirty tree, base branch missing on the remote | Nothing. The issue is not touched | `skipped: <problem>` |
 | Issue is not eligible (closed, a label above, assigned to someone else, open PR or branch, unmet dependency) | Nothing. No other issue is picked | `skipped: <rule that failed>` |
-| Acceptance criteria are ambiguous, or the ticket needs facts only the user can supply | Comment the questions on the issue as a numbered list, add `needs-info` (create the label first if missing), no branch, no PR | `skipped: needs-info` |
+| Acceptance criteria are ambiguous, or the ticket needs facts only the user can supply | Comment the questions on the issue as a numbered list, each followed by `Recommended: <answer>` when it is a decision, add `needs-info` (create the label first if missing), no branch, no PR | `skipped: needs-info` |
 | Content or docs ticket missing sources | Draft structure with `TODO`s, as in an attended run | `draft #<PR>` |
 | A check stays red and this run cannot fix it | Push the branch and open a draft PR that names the failing check and the command that shows it | `draft #<PR>` |
 
