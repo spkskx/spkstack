@@ -1,6 +1,6 @@
 ---
 name: ticket-to-pr
-description: Pick a GitHub issue, plan and implement it, then open a pull request that closes the issue. Use when the user wants to pick up a ticket, work the next issue, or run a ticket-to-PR workflow in any GitHub repo, optionally with an issue number.
+description: Pick a GitHub issue, plan and implement it, then open a pull request that closes the issue. Use when the user wants to pick up a ticket, work the next issue, run a ticket-to-PR workflow in any GitHub repo, or unblock a needs-info ticket by answering its questions, optionally with an issue number.
 argument-hint: "[issue-number] [--unattended]"
 compatibility: Requires git and the GitHub CLI (gh). Run from a local clone of a GitHub repository.
 ---
@@ -9,7 +9,7 @@ compatibility: Requires git and the GitHub CLI (gh). Run from a local clone of a
 
 Turn one GitHub issue into an implementation and a pull request. GitHub only, via `gh`. Other trackers (Jira, Linear, GitLab, and similar) are out of scope. If the work is not in a GitHub repo, or `gh` cannot see issues, stop and say so.
 
-Issues are expected in the spkstack ticket contract: `../../docs/ticket-contract.md`, relative to this skill's base directory. Read it once at the start of a run. Issues that do not follow it are still workable; the contract just makes ranking and planning reliable. `/spkstack:idea-to-tickets` writes issues in that format.
+Issues are expected in the spkstack ticket contract: `../../docs/ticket-contract.md`, relative to this skill's base directory. Read it once at the start of a run. Issues that do not follow it are still workable; the contract just makes ranking and planning reliable. `/spkstack:idea-to-tickets` writes issues in that format. When a ticket needs the user's decisions, step 3 grills the user as `../../docs/grilling.md` describes (same base); read it only then.
 
 Issue argument (may be empty): $ARGUMENTS
 
@@ -81,7 +81,7 @@ If the user passed an issue number:
 - If it already has an open PR, stop and give that PR URL. Do not open a second PR.
 - If it is assigned to someone else, stop and ask.
 - If dependencies are unmet, stop and name them.
-- If it has a `needs-*` label or is missing facts the user must supply, you may continue only under the content rules in step 3 (structure and `TODO`s, draft PR).
+- If it has a `needs-*` label or is missing facts the user must supply, continue to step 3, which grills the user on the open questions. What stays unanswered falls under the content rules there (structure and `TODO`s, draft PR).
 
 As soon as the ticket is chosen, claim it so nobody else picks it up:
 
@@ -106,7 +106,13 @@ Discover repo conventions instead of assuming a stack. Read, when they exist:
 
 Write a short plan covering approach, files to touch, out of scope, how you will verify, and risks. Post it as an issue comment. Reuse it in the PR body later.
 
-Stop and ask the user if acceptance criteria are ambiguous, or if the ticket needs facts, sources, names, credentials, prices, or dashboard values only the user can supply.
+Before writing the plan, grill the user (as `grilling.md` describes) if acceptance criteria are ambiguous, the ticket has `needs-info` questions (in its comments, often with a recommended answer), or it needs facts, sources, names, credentials, prices, or dashboard values only the user can supply. Look up anything the repo or the epic already answers instead of asking. When the frontier is empty and the user confirms:
+
+- Edit the ticket body so the acceptance criteria say what was decided, and comment the decisions on the ticket. If a decision changes the spec, edit the epic too and comment what changed.
+- Remove `needs-info` if no question is left (`gh issue edit <N> --remove-label needs-info`).
+- Facts the user could not supply stay `TODO`s, under the content rules below.
+
+Never put a secret or credential the user gives you into an issue, comment, or commit.
 
 For content or docs tickets:
 
