@@ -53,6 +53,8 @@ Depends on #<N>
 
 One ticket is one pull request that can be verified on its own: it adds or changes a check, a test, or a visible behavior. Prefer vertical slices (a thin path through every layer) over horizontal layers (all models, then all endpoints, then all UI).
 
+A repo is greenfield (empty) when it has no commits, or no files besides `README*`, `LICENSE*`, `.gitignore`, and `CLAUDE.md`. Skills that need to know whether a repo is empty use this definition.
+
 In a greenfield repo the first ticket is always the scaffold: project skeleton, the lint, typecheck, test, and build commands, and a CI workflow that runs them. Every later ticket depends on it, so `ticket-to-pr` always has real checks to run.
 
 ## Epic (the spec lives here)

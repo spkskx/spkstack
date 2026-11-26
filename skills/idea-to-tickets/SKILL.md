@@ -33,7 +33,7 @@ If no idea was given, ask for it in one line and wait.
    - No GitHub repo, or more than one plausible one: ask. If the user wants a new one, create it only on a yes: `gh repo create <name> --private` (ask for name and visibility; private is the default).
 2. `gh auth status` must succeed with write access to issues. If not, tell the user to run `gh auth login`.
 3. Classify the repo:
-   - **Greenfield**: no commits, or only a README / license.
+   - **Greenfield**: as defined in the contract's Sizing rule: no commits, or no files besides `README*`, `LICENSE*`, `.gitignore`, and `CLAUDE.md`.
    - **Existing**: has code. If it is the local checkout, read `README.md`, `CLAUDE.md`, `AGENTS.md`, `docs/`, manifests and lockfiles, and skim the top-level layout. If it is remote only, read the same through `gh api repos/OWNER/REPO/contents/<path>` or `gh repo view`. Tickets must fit the real stack and name real files.
 4. Check for overlap: `gh issue list --repo OWNER/REPO --state open --limit 100 --json number,title,labels`. If an open epic already covers this idea, say so and ask whether to extend it or start a new one.
 

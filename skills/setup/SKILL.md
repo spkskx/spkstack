@@ -54,7 +54,7 @@ From the repository root, without changing anything:
    | `Cargo.toml` | Rust | `profiles/rust.md` |
 
    Profiles live under this skill's base directory. Another manifest (for example `Gemfile`, `pom.xml`, `mix.exs`): name the language from it. Manifests for more than one language at the root: say monorepo setup is not supported, and offer the `CLAUDE.md` section only.
-2. **Empty**: no files besides `README*`, `LICENSE*`, and `.gitignore`. An empty repo gets the `CLAUDE.md` section only. Do not scaffold a project.
+2. **Empty**: greenfield as defined in `../../docs/ticket-contract.md` (Sizing rule): no commits, or no files besides `README*`, `LICENSE*`, `.gitignore`, and `CLAUDE.md`. Ask once: a minimal TypeScript skeleton (recommended), or the `CLAUDE.md` section only. On skeleton, step 4 follows `profiles/typescript-skeleton.md`.
 3. **Existing tooling**: the formatter, linter, type checker, and test runner already configured, from config files, manifest scripts, and `.github/workflows/`.
 4. **Existing section**: whether `CLAUDE.md` exists and has a line that is exactly `## spkstack`. The section runs from that line to the line before the next line starting with `## `, or to the end of the file.
 
@@ -90,7 +90,8 @@ Placement: replace the old section in place. With no section, append it to the e
 
 - **A profile exists** for the language: follow it. A profile lists the tools, the config files to write, the manifest scripts to add, the CI workflow, and the commands for `### Checks`. Where it conflicts with tooling the repo already has, it says what to do; if it does not, ask.
 - **No profile**: propose the language's standard formatter and its strictest widely used linter, with the config files, scripts, and CI step you would add. Ask once. On yes, include them in the plan for step 5. On no, write the `CLAUDE.md` section only.
-- **Empty repo or monorepo**: no tooling.
+- **Empty repo, skeleton chosen**: follow `profiles/typescript-skeleton.md`, then `profiles/typescript.md` on the result.
+- **Empty repo, section only, or monorepo**: no tooling.
 
 When the repo already runs checks, reuse its commands in `### Checks` instead of inventing new ones.
 
