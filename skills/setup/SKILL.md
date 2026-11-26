@@ -48,7 +48,7 @@ From the repository root, without changing anything:
 
    | Manifest | Language | Profile |
    |---|---|---|
-   | `package.json`, `tsconfig.json` | JS/TS | `profiles/js-ts.md` |
+   | `package.json`, `tsconfig.json` | JS/TS | `profiles/typescript.md` |
    | `pyproject.toml`, `requirements.txt`, `setup.py` | Python | `profiles/python.md` |
    | `go.mod` | Go | `profiles/go.md` |
    | `Cargo.toml` | Rust | `profiles/rust.md` |
