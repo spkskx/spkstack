@@ -121,6 +121,7 @@ Add to `package.json`:
 | `format:check` | `oxfmt --check` |
 | `typecheck` | `tsc --noEmit` |
 | `test` | the repo's runner (`vitest run`, `jest`), or `vitest run --passWithNoTests` when vitest was added |
+| `test:mutation` | `stryker run` (see Mutation testing) |
 
 If a script with that name already exists with a different command, show both and ask: replace, keep theirs, or keep theirs and add ours under another name (for example `lint:ox`). Never overwrite one silently. Keeping theirs means `### Checks` and CI use their script.
 
@@ -161,6 +162,79 @@ jobs:
 
 Before writing, check the latest major of each action with `gh api repos/<owner>/<action>/releases/latest --jq .tag_name` and use it.
 
+## Mutation testing
+
+Lint catches hollow tests by shape. Mutation testing catches the rest of [`../../../docs/tautological-tests.md`](../../../docs/tautological-tests.md): StrykerJS changes the code under test, and a mutant that survives means no test noticed. Only with a test runner: skip this section when the repo has none.
+
+Tested with StrykerJS 10.1.1 and vitest 5.1. A full run on the skeleton (17 mutants) takes about 2 seconds. Larger codebases take minutes to hours, which is why CI mutates only the files a PR changes.
+
+**Dev deps**: `@stryker-mutator/core` and the runner plugin for the repo's test runner: `@stryker-mutator/vitest-runner` (`testRunner: "vitest"`) or `@stryker-mutator/jest-runner` (`testRunner: "jest"`).
+
+**`stryker.config.json`**:
+
+```json
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "plugins": ["@stryker-mutator/vitest-runner"],
+  "coverageAnalysis": "perTest",
+  "mutate": ["src/**/*.ts", "!src/**/*.test.ts"],
+  "reporters": ["clear-text", "progress", "html"],
+  "thresholds": { "high": 80, "low": 60, "break": null },
+  "tsconfigFile": "stryker-skips-tsconfig-rewrite"
+}
+```
+
+- `plugins` names the runner because Stryker does not find plugins on its own under pnpm's layout.
+- `mutate` is the source folders, not the tests. Change `src` to where the repo's code lives.
+- `thresholds.break` is `null`: report-only, so the score never fails a run. This follows the epic's open question on blocking versus report-only. Once it is answered, set `break` to the agreed score.
+- `tsconfigFile` names a file that does not exist on purpose. StrykerJS 10.1 rewrites `tsconfig.json` with the TypeScript 6 JS API, which TypeScript 7 removed (https://github.com/stryker-mutator/stryker-js/issues/6111), and the run crashes with `ts.parseConfigFileTextToJson is not a function`. A missing file skips that rewrite. The rewrite only matters when `tsconfig.json` extends or references files outside the repo, so in a single-package repo nothing is lost. With TypeScript 6 or older, leave the key out. Remove it once a StrykerJS release fixes that issue.
+
+**`.gitignore`**: add `reports` and `.stryker-tmp`, which also keeps them out of lint and format.
+
+**Script**: `test:mutation`: `stryker run`. Same conflict rule as the other scripts.
+
+**CI**: add a second job to the workflow:
+
+```yaml
+  mutation:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: <same as the checks job>
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: changed source files
+        id: changed
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          files=$(git diff --name-only --diff-filter=AMR "origin/$BASE_REF...HEAD" -- ':(glob)src/**/*.ts' ':(glob,exclude)src/**/*.test.ts' | paste -sd, -)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - if: steps.changed.outputs.files != ''
+        env:
+          FILES: ${{ steps.changed.outputs.files }}
+        run: pnpm test:mutation --mutate "$FILES"
+      - if: steps.changed.outputs.files != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-report
+          path: reports/mutation/
+```
+
+- StrykerJS has no changed-files mode, so the job diffs the PR against its base and passes the changed source files to `--mutate`. With none, it skips the run.
+- Keep the two pathspecs in step with `mutate` in the config.
+- File names reach the shell through `env`, never `${{ }}` inside `run`, so a crafted file name cannot inject commands.
+- Adapt the setup steps for npm, yarn, or bun as in the checks job.
+
+`test:mutation` is not part of `### Checks`: it is slow, and it is report-only.
+
 ## Checks
 
 The `### Checks` line, in the repo's manager, with only the scripts that exist:
@@ -171,4 +245,4 @@ pnpm lint && pnpm format:check && pnpm typecheck && pnpm test
 
 ## Run
 
-After install and writing files, run `format` once so `format:check` is green on files this PR wrote. Run it on the rest of the repo only if the user says yes: it can touch every file. Then run each script in `### Checks`. On an existing codebase red lint or typecheck is expected: report it, do not fix the code in this PR.
+After install and writing files, run `format` once so `format:check` is green on files this PR wrote. Run it on the rest of the repo only if the user says yes: it can touch every file. Then run each script in `### Checks`. On an existing codebase red lint or typecheck is expected: report it, do not fix the code in this PR. Then run `test:mutation` once and put its mutation score in the PR body. It is report-only, so a low score does not make the PR a draft.
