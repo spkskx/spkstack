@@ -72,7 +72,7 @@ Slice the MVP into tickets following the contract's sizing rule:
 
 - One ticket = one PR that is verifiable on its own. Vertical slices over layers.
 - Only `size:s` and `size:m`. Split anything bigger.
-- Greenfield: ticket 1 is the scaffold (skeleton, lint / typecheck / test / build commands, CI workflow). Every other ticket depends on it.
+- Greenfield: ticket 1 is the scaffold (skeleton, lint / typecheck / test / build commands, CI workflow). Every other ticket depends on it. For JS/TS, add the `/spkstack:setup` hint from the contract's Sizing rule to the scaffold ticket's Hints.
 - Add `Depends on` only for real ordering constraints, so independent tickets can run in parallel.
 - Priorities: the critical path to a usable MVP is `p1`, polish is `p2` or `p3`. Use `p0` only if the user said something is urgent.
 - Put deferred phases in the spec's Phases section, not in tickets, unless the user asks for them now.
