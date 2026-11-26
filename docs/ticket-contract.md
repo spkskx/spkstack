@@ -57,6 +57,8 @@ A repo is greenfield (empty) when it has no commits, or no files besides `README
 
 In a greenfield repo the first ticket is always the scaffold: project skeleton, the lint, typecheck, test, and build commands, and a CI workflow that runs them. Every later ticket depends on it, so `ticket-to-pr` always has real checks to run.
 
+A JS/TS scaffold ticket uses `/spkstack:setup` for lint, format, typecheck, test, and CI. Its Hints tell `ticket-to-pr` to build them from setup's `profiles/typescript-skeleton.md` and `profiles/typescript.md`, and to add setup's `## spkstack` section to `CLAUDE.md`, all on the ticket's own branch. The scaffold stays one ticket and one PR, with no questions mid-run, so it also works unattended.
+
 ## Epic (the spec lives here)
 
 One tracking issue per idea. Its body is the spec, so planning produces only GitHub issues: no files, no branches, no pull requests.
