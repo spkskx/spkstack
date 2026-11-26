@@ -47,6 +47,7 @@ Write it at the root. If one already exists, show it beside this one and ask: re
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "unicorn", "oxc", "import", "vitest"],
+  "jsPlugins": ["./lint/no-comments.js"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -67,7 +68,8 @@ Write it at the root. If one already exists, show it beside this one and ask: re
     "vitest/no-commented-out-tests": "error",
     "vitest/no-identical-title": "error",
     "vitest/valid-title": "error",
-    "vitest/require-to-throw-message": "error"
+    "vitest/require-to-throw-message": "error",
+    "spkstack/no-comments": "error"
   }
 }
 ```
@@ -78,6 +80,14 @@ Write it at the root. If one already exists, show it beside this one and ask: re
 - No `tsconfig.json`: drop `options.typeAware`.
 
 These rules map to [`../../../docs/tautological-tests.md`](../../../docs/tautological-tests.md): a test with no assertion, an `expect` that never runs or asserts nothing, or an assertion behind a branch passes whatever the code does. Focused, skipped, and commented-out tests hide failures. Lint cannot catch every tautological test. The rule block in `CLAUDE.md` covers the rest.
+
+## Comment check
+
+Copy [`typescript/no-comments.js`](typescript/no-comments.js), next to this file, to `lint/no-comments.js` in the repo, byte for byte. The config above loads it as an oxlint JS plugin, so `lint` fails on any comment outside the keep list in [`../../../docs/no-comments.md`](../../../docs/no-comments.md). That doc says which keep exceptions the check enforces and which stay review-only. If `lint/no-comments.js` already exists with other content, show the diff and ask.
+
+oxlint marks JS plugins as alpha. If `jsPlugins` is missing from `node_modules/oxlint/configuration_schema.json`, leave the plugin and its rule out, and say so in the PR body.
+
+On an existing codebase this check will fail on every comment already there. That is expected: report it, and point to `/spkstack:no-comments` to clear them in a separate PR.
 
 ## `.oxfmtrc.json`
 
