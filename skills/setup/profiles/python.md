@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.4.0
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
@@ -99,7 +99,7 @@ jobs:
 - `<base>` is the base branch.
 - `uv sync --locked` fails when `uv.lock` is out of date with `pyproject.toml`. uv installs the Python version from `.python-version` or `requires-python`, so the job needs no setup-python step.
 - pytest exits 5 when it collects no tests. If the repo has no tests yet, leave the pytest step out of CI and `### Checks`, and say so in the plan: the first ticket that adds a test adds the step.
-- Before writing, check the latest major of each action with `gh api repos/<owner>/<action>/releases/latest --jq .tag_name` and use it.
+- Before writing, check the latest release of each action with `gh api repos/<owner>/<action>/releases/latest --jq .tag_name`. Use the major for `actions/checkout` (`v7`). Use the full tag for `astral-sh/setup-uv` (`v10.4.0`): it publishes no major tags, so `@v10` fails to resolve.
 
 ## Checks
 
