@@ -75,7 +75,7 @@ describe("slugify", () => {
 
 `.gitignore`: add `node_modules` if it is not already listed. Keep any existing lines.
 
-Leave `README*`, `LICENSE*`, and `CLAUDE.md` as they are, apart from the `## spkstack` section that step 3 writes.
+Leave the content of `README*`, `LICENSE*`, and `CLAUDE.md` as it is, apart from the `## spkstack` section that step 3 writes. Their formatting is the exception, under Install.
 
 ## Install
 
@@ -85,4 +85,4 @@ After approval, in setup step 5.2, before anything from `typescript.md`:
 pnpm add -D typescript vitest
 ```
 
-This writes `pnpm-lock.yaml`. Then follow `typescript.md`'s install, config, scripts, CI, and Run sections. The skeleton passes `lint`, `format:check`, `typecheck`, and `test` as written, so every check in the setup PR must be green: a red check here is a bug in this file or the profile, not an expected failure on an existing codebase. Open the setup PR as a draft and name the check if one is red.
+This writes `pnpm-lock.yaml`. Then follow `typescript.md`'s install, config, scripts, CI, and Run sections, with one change to Run: run `format` on the whole repo, not only on the files this PR wrote. `format:check` covers every file, and the files that were already there are often not formatted. GitHub's generated `README.md`, for example, has no blank line after its heading, so the first CI run fails without this. In an empty repo that touches only the formatting of `README*` and `CLAUDE.md`. Say so in the step 5 plan, so the approval covers it. The skeleton passes `lint`, `format:check`, `typecheck`, and `test` as written, so every check in the setup PR must be green: a red check here is a bug in this file or the profile, not an expected failure on an existing codebase. Open the setup PR as a draft and name the check if one is red.
