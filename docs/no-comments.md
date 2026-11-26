@@ -52,7 +52,26 @@ A long justification without a keep-list reason does not earn a keep.
 - Style-only, pedantic, or a known false positive: keep.
 - Catches real bugs or protects correctness or safety: delete the suppression and fix the code it was hiding.
 
+## Enforced by lint (JS/TS)
+
+`/spkstack:setup` writes an oxlint JS plugin into JS/TS repos (`skills/setup/profiles/typescript/no-comments.js`). Its rule `spkstack/no-comments` fails `lint` on every comment except these, which it recognizes by shape:
+
+| Keep | What the check allows |
+|---|---|
+| License or legal header | A comment before the first token of the file that contains `SPDX-License-Identifier`, `Copyright`, `@license`, or `(c) <year>` |
+| Doc comment on a public API | A `/** */` block directly before an `export` declaration, or before a member of an exported class, interface, or enum |
+| Issue or RFC link | A comment containing an issue, PR, or merge request URL (`/issues/N`, `/pull/N`, `/merge_requests/N`, `/browse/KEY-N`), `RFC N`, or an rfc-editor.org or datatracker.ietf.org link |
+| Lint, formatter, and tool pragma | `eslint-*`, `oxlint-*`, `prettier-ignore`, `oxfmt-ignore`, `@ts-expect-error`, `@ts-ignore`, `@ts-nocheck`, `@ts-check`, coverage ignores (`c8`, `v8`, `istanbul`), `@vitest-environment`, `@jest-environment`, `@__PURE__`, `@__NO_SIDE_EFFECTS__`, `global`, and `/// <reference>` |
+
+These stay review-only, for `/spkstack:no-comments` and reviewers:
+
+- Behavior forced by something we cannot change. A check cannot tell a vendor quirk from narration, so these comments fail lint. Make them an issue or RFC link, or suppress the line with a reason.
+- Whether a doc comment defines a contract or only restates the signature.
+- Whether a suppression's rule is style-only or catches bugs. The check allows every pragma.
+- Whether a link explains a constraint or is a to-read note.
+- Claimed constraints (`do not remove`, `IMPORTANT`): they fail lint like any other comment.
+
 ## Who reads this
 
-- `/spkstack:setup`: writes the rule block into a target repo's `CLAUDE.md`.
+- `/spkstack:setup`: writes the rule block into a target repo's `CLAUDE.md`, and in JS/TS repos the lint check above.
 - `/spkstack:no-comments`: deletes comments outside the keep list in a diff, and handles claimed constraints and suppressions as above.
